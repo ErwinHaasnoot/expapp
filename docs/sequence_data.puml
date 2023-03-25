@@ -1,4 +1,5 @@
 @startuml
+!theme vibrant
 title High level Overview of Experiment flow
 autonumber "<b>0."
 actor "Participant" as P
@@ -20,8 +21,15 @@ loop while trials completed < 100
 end
 P -> B : Complete final trial
 B <-> S : Send complete data
+alt On send success
 S -> S : Store complete data to complete data file
-B -> P : Present Trial Feedback
+B -> P : Feedback about storage success
 S -> E : Notify experiment is complete
+else On send failure
+
+B -> P : Feedback about storage failure
+P -> P : Download Complete data file
+P -> E : Send Complete data file via email
+end
 E -> E : Analyze results (exp_webapp_analysis.R)
 @enduml
